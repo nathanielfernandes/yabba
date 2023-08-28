@@ -10,7 +10,7 @@ WORKDIR /yabba
 
 ARG MY_GIT_TOKEN
 
-# RUN git config --global url."https://api:$MY_GIT_TOKEN@github.com/".insteadOf "https://github.com/"
+RUN git config --global url."https://api:$MY_GIT_TOKEN@github.com/".insteadOf "https://github.com/"
 
 # copy over your manifests
 COPY ./Cargo.lock ./Cargo.lock
