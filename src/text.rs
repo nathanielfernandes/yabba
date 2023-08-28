@@ -14,7 +14,7 @@ use gifstream::{GifStream, GIF_HEADERS};
 use image::RgbaImage;
 use once_cell::sync::Lazy;
 
-use crate::{scripts::*, AppState};
+use crate::{scripts::*, AppState, CORS_HEADERS};
 
 const_script!(TEXT, "text.ql");
 
@@ -65,6 +65,7 @@ pub async fn set_text(
     let Ok(img) = generate_text_frame(text) else {
         return (
             StatusCode::INTERNAL_SERVER_ERROR,
+            CORS_HEADERS,
             "failed to generate text frame",
         )
             .into_response();
@@ -73,10 +74,10 @@ pub async fn set_text(
     if state.text_slots.contains_key(&*id) {
         state.text_slots.insert(id, img).await;
     } else {
-        return (StatusCode::NOT_FOUND, "text slot not found").into_response();
+        return (StatusCode::NOT_FOUND, CORS_HEADERS, "text slot not found").into_response();
     }
 
-    "ok".into_response()
+    (CORS_HEADERS, "ok").into_response()
 }
 
 pub async fn gen_id(State(state): State<AppState>) -> Response {
@@ -98,5 +99,5 @@ pub async fn gen_id(State(state): State<AppState>) -> Response {
 
     state.text_slots.insert(id.clone(), img).await;
 
-    id.into_response()
+    (CORS_HEADERS, id).into_response()
 }

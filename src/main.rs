@@ -54,5 +54,10 @@ async fn main() {
         .unwrap();
 }
 
+pub const CORS_HEADERS: [(&str, &str); 2] = [
+    ("Access-Control-Allow-Origin", "*"),
+    ("Access-Control-Allow-Methods", "GET, POST"),
+];
+
 // scripts
 // const_script!(SPOTIFY, "spotify.ql");

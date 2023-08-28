@@ -3,6 +3,7 @@ use axum::{
     extract::Path,
     response::{IntoResponse, Response},
 };
+use reqwest::StatusCode;
 use std::{sync::Arc, time::Duration};
 
 use canvas::prelude::*;
@@ -11,7 +12,7 @@ use gifstream::{GifStream, GIF_HEADERS};
 use image::RgbaImage;
 use once_cell::sync::Lazy;
 
-use crate::scripts::*;
+use crate::{scripts::*, CORS_HEADERS};
 
 const_script!(TIME, "time.ql");
 
@@ -36,7 +37,7 @@ pub async fn time_gif(Path(tz): Path<String>) -> Response {
         "HST" => chrono_tz::Pacific::Honolulu,
         "GMT" => chrono_tz::Etc::GMT,
         "UTC" => chrono_tz::UTC,
-        _ => return "Invalid timezone".into_response(),
+        _ => return (StatusCode::BAD_REQUEST, CORS_HEADERS, "Invalid timezone").into_response(),
     };
 
     let gs = GifStream::new(
